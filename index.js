@@ -1,3 +1,5 @@
+#! /usr/bin/env node
+
 var buildDoc = require("./build_doc.js"),
     fermata = require('fermata');
 
