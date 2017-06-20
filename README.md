@@ -4,7 +4,7 @@ PUT a folder as JSON, in CouchDB "traditional couchapp" style, simple node.js to
 
 ## Usage
 
-Install updoc, and then use it to post a JSON "document folder" to a CouchDB database, or any HTTP server really…:
+Install updoc, and then use it to push a JSON "document folder" to a CouchDB database:
 
 ```
 npm install --global updoc
@@ -37,14 +37,32 @@ If there is an "_attachments" subfolder, the binary files are uploaded verbatim 
 So a design document might have a folder like:
 
 ```
-my_ddoc/
-  language
+my_app_repo/
+  _id         ('_design/glob')
+  language    ('javascript')
   views/
-      someindex.js
+    by_date/
+      map.js
+      reduce.js
+    by_path/
+      map.js
+  lists/
+    posts.js
+  lib/
+    atom.js
+    date.js
+    glob.js
+    …
+  templates/
+    theme.html
+  _attachments/
+    logo.png
+    nerdishness.html
 ```
 
-TODO: finish this example, including push to database
+You could then update the "_design/glob" document in a local "dev_db" by using the following command:
 
+    updoc . http://some_admin:their_password@localhost:5984/dev_db
 
 You can use updoc for regular documents too, if you have need:
 
