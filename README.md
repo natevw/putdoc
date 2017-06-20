@@ -46,6 +46,7 @@ my_app_repo/
       reduce.js
     by_path/
       map.js
+  rewrites.json
   lists/
     posts.js
   lib/
