@@ -1,5 +1,5 @@
 {
-  "name": "updoc",
+  "name": "putdoc",
   "version": "1.0.0",
   "description": "Upload folder as a CouchDB document, particularly useful for pushing traditional couchapps",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/natevw/updoc.git"
+    "url": "git+https://github.com/natevw/putdoc.git"
   },
   "keywords": [
     "couchdb"
@@ -16,9 +16,9 @@
   "author": "Nathan Vander Wilt",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/natevw/updoc/issues"
+    "url": "https://github.com/natevw/putdoc/issues"
   },
-  "homepage": "https://github.com/natevw/updoc#readme",
+  "homepage": "https://github.com/natevw/putdoc#readme",
   "dependencies": {
     "fermata": "^0.11.0-beta1",
     "mime": "^1.3.6",

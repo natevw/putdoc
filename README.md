@@ -1,23 +1,23 @@
-# updoc (work in progress)
+# putdoc
 
-PUT a folder as JSON, in CouchDB "traditional couchapp" style, simple node.js tool.
+PUT a folder as JSON, in CouchDB "traditional couchapp" style, via simple node.js tool.
 
 ## Usage
 
-Install updoc, and then use it to push a JSON "document folder" to a CouchDB database:
+Install putdoc, and then use it to push a JSON "document folder" to a CouchDB database:
 
 ```
-npm install --global updoc
-updoc /path/to/ddoc-folder http://localhost:5984/some-db
+npm install --global putdoc
+putdoc /path/to/ddoc-folder http://localhost:5984/some-db
 ```
 
 Or within a node.js project:
 
 ```
-npm install --save-dev updoc
-# simple shell example, more likely you would use `updoc` from a package.json script…
+npm install --save-dev putdoc
+# simple shell example, more likely you would use `putdoc` from a package.json script…
 export PATH=$PATH:./node_modules/.bin
-updoc . http://localhost:5984/some-db
+putdoc . http://localhost:5984/some-db
 ```
 
 ## "Document folder" structure
@@ -63,9 +63,9 @@ my_app_repo/
 
 You could then update the "_design/glob" document in a local "dev_db" by using the following command:
 
-    updoc . http://some_admin:their_password@localhost:5984/dev_db
+    putdoc . http://some_admin:their_password@localhost:5984/dev_db
 
-You can use updoc for regular documents too, if you have need:
+You can use putdoc for regular documents too, if you have need:
 
 ```
 freedom_day
@@ -86,7 +86,7 @@ Simply becomes:
 }
 ```
 
-This would probably be more useful with a document that had attachments, although note that updoc does not handle large attachments well.
+This would probably be more useful with a document that had attachments, although note that putdoc does not handle large attachments well.
 
 
 ## See also
@@ -102,5 +102,10 @@ This would probably be more useful with a document that had attachments, althoug
 * I also have a utility that lets you `require()` a traditional-style design document into your node app, called [ddoc](https://github.com/natevw/ddoc). This can help you migrate design document code (like validators or views) out of the database and into middleware should you need that.
 
 
-## License
+## ISC License
 
+Copyright © 2017 Nathan Vander Wilt
+
+Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
