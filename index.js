@@ -1,5 +1,4 @@
-var getDoc = require("./lib.js")
+var buildDoc = require("./build_doc.js")
 
-
-doc = getDoc(process.argv[2])
+var doc = buildDoc(process.argv[2])
 console.log(doc);
