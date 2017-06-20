@@ -22,11 +22,13 @@ updoc . http://localhost:5984/some-db
 
 ## "Document folder" structure
 
-A design document folder is turned into an object using each file or subfolder's name as a key. The UTF-8 content of most files are used as a (string) value, and subfolders become nested objects. Files with the `.json` extension are parsed to support other datatypes like arrays/numbers/boolean.
+A design document folder is turned into an object using each file or subfolder's name as a key (dropping any extension).
 
-For convenience both the `.json` and `.js` extensions are dropped when used for keys in the uploaded object.
+The UTF-8 content of most files are used as a (string) value, and subfolders become nested objects.
 
-If there is an "_attachments" subfolder, the binary files are uploaded verbatim under their original subpaths.
+Files with the `.json` extension are parsed to support other datatypes like arrays/numbers/boolean.
+
+If there is an "_attachments" subfolder, the binary files are uploaded verbatim under their original subpaths. The content type will be guessed based on each file's extension.
 
 (For an alternate explanation, see [The CouchApp Filesystem Mapping](http://couchapp.readthedocs.io/en/latest/design/filesystem-mapping.html) documentation although note that there are currently some differences, e.g. the root folder name is not used and the `_docs` subfolder is not yet supported.)
 

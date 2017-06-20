@@ -6,7 +6,6 @@ var fs = require('fs'),
 module.exports = function (ddoc_dir, opts) {
   opts = extend({
     excludeDirs: ['packages', 'node_modules'],
-    hideExtensions: ['.js', '.json'],
   }, opts)
   
   function objFromDir(dir, lvl) {
@@ -28,11 +27,7 @@ module.exports = function (ddoc_dir, opts) {
           if (ext === '.json') {
             data = JSON.parse(data);
           }
-          if (opts.hideExtensions.indexOf(ext) !== -1) {
-            obj[p.basename(file,ext)] = data
-          } else {
-            obj[file] = data
-          }
+          obj[p.basename(file,ext)] = data
         } else {
             console.warn("Skipping ", path);
         }
@@ -41,6 +36,7 @@ module.exports = function (ddoc_dir, opts) {
   }
   function addAttsFromDir(atts, dir, pre) {
     fs.readdirSync(dir).forEach(function (file) {
+      if (file[0] === '.') return;
       var key = p.join(pre,file),
           path = p.join(dir,file),
           type = fs.statSync(path);
