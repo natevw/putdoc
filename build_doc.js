@@ -48,6 +48,5 @@ module.exports = function (ddoc_dir, opts) {
     });
   }
   
-  ddoc_dir = p.resolve(p.dirname(module.parent.filename), ddoc_dir);
   return objFromDir(ddoc_dir, 0);   
 }

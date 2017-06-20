@@ -1,6 +1,6 @@
 {
   "name": "putdoc",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Upload folder as a CouchDB document, particularly useful for pushing traditional couchapps",
   "main": "build_doc.js",
   "bin": {

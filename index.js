@@ -15,7 +15,7 @@ var api = fermata.json(post_url),
     doc = buildDoc(doc_folder),
     doc_url = api([doc._id]);
 doc_url.get(function (e,oldDoc) {
-  if (e && e.status !== 404) console.error("Error checking current doc:", e);
+  if (e && e.status !== 404) console.error("Error checking current doc:", e, arguments);
   else {
     if (!e) doc._rev = oldDoc._rev;
     doc_url.put(doc, function (e,d) {
