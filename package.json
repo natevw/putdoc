@@ -25,6 +25,7 @@
   "dependencies": {
     "fermata": "^0.11.0-beta1",
     "mime": "^1.3.6",
-    "xok": "^2.0.0"
+    "xok": "^2.0.0",
+    "ignore": "^3.3.5"
   }
 }
