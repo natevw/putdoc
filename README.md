@@ -32,6 +32,8 @@ If there is an "_attachments" subfolder, the binary files are uploaded verbatim 
 
 (For an alternate explanation, see [The CouchApp Filesystem Mapping](http://couchapp.readthedocs.io/en/latest/design/filesystem-mapping.html) documentation although note that there are currently some differences, e.g. the root folder name is not used and the `_docs` subfolder is not yet supported.)
 
+A file `.putdocignore` can be used to ignore files and folders much similar to `.gitignore`.
+
 ## Examples
 
 So a design document might have a folder like:
