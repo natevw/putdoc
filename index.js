@@ -4,7 +4,7 @@ var buildDoc = require("./build_doc.js"),
     fermata = require('fermata');
 
 if (process.argv.length < 4) {
-  console.log("Usage: updoc <doc_folder> <post_url>");
+  console.log("Usage: putdoc <doc_folder> <post_url>");
   process.exit(-1);
 }
 
