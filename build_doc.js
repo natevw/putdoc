@@ -1,19 +1,25 @@
 var fs = require('fs'),
     p = require('path'),
     mime = require('mime'),
-    extend = require('xok');
+    extend = require('xok'),
+    ignore = require('ignore');
 
 module.exports = function (ddoc_dir, opts) {
   opts = extend({
     excludeDirs: ['packages', 'node_modules'],
   }, opts)
   
+  var ig = ignore().add(opts.ignore || '');
+  
   function objFromDir(dir, lvl) {
     var obj = {};
     fs.readdirSync(dir).forEach(function (file) {
         var path = p.join(dir,file),
             type = fs.statSync(path);
-        if (file[0] === '.') return;
+        if (file[0] === '.' || ig.ignores(file)) {
+          console.warn("Skipping ", path);
+          return;
+        }
         else if (lvl === 0 && type.isDirectory() && file === '_attachments') {
          obj._attachments = {};
          addAttsFromDir(obj._attachments, path, '');
@@ -36,10 +42,13 @@ module.exports = function (ddoc_dir, opts) {
   }
   function addAttsFromDir(atts, dir, pre) {
     fs.readdirSync(dir).forEach(function (file) {
-      if (file[0] === '.') return;
       var key = p.join(pre,file),
           path = p.join(dir,file),
           type = fs.statSync(path);
+      if (file[0] === '.' || ig.ignores(file)) {
+        console.warn("Skipping ", path);
+        return;
+      }
       if (type.isDirectory()) addAttsFromDir(atts, path, key);
       else atts[key] = {
         content_type: mime.lookup(file),
