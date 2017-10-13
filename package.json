@@ -1,6 +1,6 @@
 {
   "name": "putdoc",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "Upload folder as a CouchDB document, particularly useful for pushing traditional couchapps",
   "main": "build_doc.js",
   "bin": {
@@ -14,7 +14,9 @@
     "url": "git+https://github.com/natevw/putdoc.git"
   },
   "keywords": [
-    "couchdb"
+    "couchdb",
+    "couchapp",
+    "json"
   ],
   "author": "Nathan Vander Wilt",
   "license": "ISC",
