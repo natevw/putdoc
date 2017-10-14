@@ -73,5 +73,8 @@ module.exports = function (ddoc_dir, opts) {
     });
   }
   
-  return objFromDir('', 0);
+  var obj = objFromDir('', 0);
+  if (!obj._id) obj._id = "_design/" + p.basename(ddoc_dir);
+  else obj._id = obj._id.trim();      // clean up a bit, not as aggressively as https://github.com/couchapp/couchapp/blob/1399aedfa9e5bb3dd582aa5992dc419e82e102a3/couchapp/localdoc.py#L81 though
+  return obj;
 }
