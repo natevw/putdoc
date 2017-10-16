@@ -30,7 +30,7 @@ Files with the `.json` extension are parsed to support other datatypes like arra
 
 If there is an "_attachments" subfolder, the binary files are uploaded verbatim under their original subpaths. The content type will be guessed based on each file's extension.
 
-(For an alternate explanation, see [The CouchApp Filesystem Mapping](http://couchapp.readthedocs.io/en/latest/design/filesystem-mapping.html) documentation although note that there are currently some differences, e.g. the root folder name is not used and the `_docs` subfolder is not yet supported.)
+(For an alternate explanation, see [The CouchApp Filesystem Mapping](http://couchapp.readthedocs.io/en/latest/design/filesystem-mapping.html) documentation although note that there are currently some differences, e.g. the `_docs` subfolder is not yet supported.)
 
 ## Examples
 
