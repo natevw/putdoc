@@ -101,6 +101,8 @@ This would probably be more useful with a document that had attachments, althoug
 
 * I also have a utility that lets you `require()` a traditional-style design document into your node app, called [ddoc](https://github.com/natevw/ddoc). This can help you migrate design document code (like validators or views) out of the database and into middleware should you need that.
 
+* [couchdb-push](https://github.com/jo/couchdb-push) is a similar tool to deploy CouchDB documents from directory, JSON or CommonJS module. 
+
 
 ## ISC License
 
