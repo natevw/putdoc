@@ -34,38 +34,63 @@ module.exports = function (ddoc_dir, opts) {
     return data;
   }
   
-  function objFromDir(dir, lvl) {
-    var obj = {};
-    fs.readdirSync(p.join(ddoc_dir,dir)).forEach(function (file) {
+  function forEachEntry(rel_base, dir, fn) {
+    fs.readdirSync(p.join(rel_base,dir)).forEach(function (file) {
         var rel_path = p.join(dir,file),
-            abs_path = p.join(ddoc_dir,rel_path),
+            abs_path = p.join(rel_base,rel_path),
             type = fs.statSync(abs_path);
         if (file[0] === '.' || opts.ignore(rel_path)) return;
-        else if (lvl === 0 && type.isDirectory() && file === '_attachments') {
-          obj._attachments = {};
-          addAttsFromDir(obj._attachments, rel_path, '');
-        }
-        else if (type.isDirectory()) {
-          obj[file] = objFromDir(rel_path, lvl+1);
-        }
-        else if (type.isFile()) {
-          var ext = p.extname(file),
-              key = p.basename(file,ext);
-          obj[key] = loadData(abs_path, {json:(ext === '.json')})
-        } else {
-            console.warn("Skipping ", rel_path);
-        }
+        else fn(file, type, rel_path, abs_path);
+    });
+  }
+  
+  function fixupId(obj, fallback_id) {
+    if (!obj._id) obj._id = fallback_id;
+    else obj._id = obj._id.trim();      // clean up a bit, not as aggressively as https://github.com/couchapp/couchapp/blob/1399aedfa9e5bb3dd582aa5992dc419e82e102a3/couchapp/localdoc.py#L81 though
+  }
+  
+  
+  function objFromDir(doc_dir, dir, lvl) {
+    var obj = {};
+    forEachEntry(doc_dir, dir, function (file, type, rel_path, abs_path) {
+      if (lvl === 0 && type.isDirectory() && file === '_attachments') {
+        obj._attachments = {};
+        addAttsFromDir(obj._attachments, doc_dir, rel_path, '');
+      }
+      else if (lvl === 0 && type.isDirectory() && file === '_docs') {
+        obj._docs = [];
+        addDocsFromDir(obj._docs, abs_path, '');
+      }
+      else if (type.isDirectory()) {
+        obj[file] = objFromDir(doc_dir, rel_path, lvl+1);
+      }
+      else if (type.isFile()) {
+        var ext = p.extname(file),
+            key = p.basename(file,ext);
+        obj[key] = loadData(abs_path, {json:(ext === '.json')});
+      } else {
+          console.warn("Skipping field", rel_path);
+      }
     });
     return obj;
   }
-  function addAttsFromDir(atts, dir, pre) {
-    fs.readdirSync(p.join(ddoc_dir,dir)).forEach(function (file) {
-      var key = p.join(pre,file),
-          rel_path = p.join(dir,file),
-          abs_path = p.join(ddoc_dir,rel_path),
-          type = fs.statSync(abs_path);
-      if (file[0] === '.' || opts.ignore(rel_path)) return;
-      else if (type.isDirectory()) addAttsFromDir(atts, rel_path, key);
+  function addDocsFromDir(docs, dir) {
+    forEachEntry(dir, '', function (file, type, rel_path, abs_path) {
+      var subdoc;
+      if (type.isDirectory()) subdoc = objFromDir(abs_path, '', 0);
+      else if (type.isFile() && p.extname(file) === '.json') {
+        subdoc = loadData(abs_path, {json:true});
+      } else {
+          console.warn("Skipping document", rel_path);
+      }
+      fixupId(subdoc, p.basename(file, '.json'));
+      docs.push(subdoc);
+    });
+  }
+  function addAttsFromDir(atts, doc_dir, dir, pre) {
+    forEachEntry(doc_dir, dir, function (file, type, rel_path, abs_path) {
+      var key = p.join(pre,file);
+      if (type.isDirectory()) addAttsFromDir(atts, doc_dir, rel_path, key);
       else atts[key] = {
         content_type: mime.lookup(file),
         data: fs.readFileSync(abs_path).toString('base64')
@@ -73,8 +98,7 @@ module.exports = function (ddoc_dir, opts) {
     });
   }
   
-  var obj = objFromDir('', 0);
-  if (!obj._id) obj._id = "_design/" + p.basename(ddoc_dir);
-  else obj._id = obj._id.trim();      // clean up a bit, not as aggressively as https://github.com/couchapp/couchapp/blob/1399aedfa9e5bb3dd582aa5992dc419e82e102a3/couchapp/localdoc.py#L81 though
+  var obj = objFromDir(ddoc_dir, '', 0);
+  fixupId(obj, "_design/" + p.basename(ddoc_dir));
   return obj;
 }
