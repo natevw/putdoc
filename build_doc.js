@@ -92,7 +92,7 @@ module.exports = function (ddoc_dir, opts) {
       var key = p.join(pre,file);
       if (type.isDirectory()) addAttsFromDir(atts, doc_dir, rel_path, key);
       else atts[key] = {
-        content_type: mime.lookup(file),
+        content_type: mime.getType(file),
         data: fs.readFileSync(abs_path).toString('base64')
       };
     });
