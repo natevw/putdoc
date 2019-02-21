@@ -6,7 +6,7 @@ var fs = require('fs'),
 module.exports = function (ddoc_dir, opts) {
   opts = extend({
     ignore: '.couchappignore'     // string: path to JSON ignores list, array: provide list directly, fn: used to test
-  }, opts)
+  }, opts);
   
   if (typeof opts.ignore === 'string') try {
     var ignore_file = p.join(ddoc_dir, opts.ignore);
@@ -25,7 +25,7 @@ module.exports = function (ddoc_dir, opts) {
   }
   
   function loadData(abs_path, opts) {
-    opts = extend({json:false}, opts)
+    opts = extend({json:false}, opts);
     
     var data = fs.readFileSync(abs_path, 'utf8');
     if (opts.json) {
@@ -42,8 +42,8 @@ module.exports = function (ddoc_dir, opts) {
             type = fs.statSync(abs_path);
         if (file[0] === '.' || opts.ignore(rel_path)) return;
         else if (lvl === 0 && type.isDirectory() && file === '_attachments') {
-         obj._attachments = {};
-         addAttsFromDir(obj._attachments, rel_path, '');
+          obj._attachments = {};
+          addAttsFromDir(obj._attachments, rel_path, '');
         }
         else if (type.isDirectory()) {
           obj[file] = objFromDir(rel_path, lvl+1);
