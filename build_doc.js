@@ -5,6 +5,7 @@ var fs = require('fs'),
 
 module.exports = function (ddoc_dir, opts) {
   opts = extend({
+    no_parent: false,             // boolean: if true, expects so-called `ddoc_dir` to be a folder containing individual documents
     ignore: '.couchappignore'     // string: path to JSON ignores list, array: provide list directly, fn: used to test
   }, opts);
   
@@ -98,7 +99,13 @@ module.exports = function (ddoc_dir, opts) {
     });
   }
   
-  var obj = objFromDir(ddoc_dir, '', 0);
-  fixupId(obj, "_design/" + p.basename(ddoc_dir));
-  return obj;
+  if (opts.no_parent) {
+    var _docs = [];
+    addDocsFromDir(_docs, ddoc_dir);
+    return {_docs:_docs};
+  } else {
+    var obj = objFromDir(ddoc_dir, '', 0);
+    fixupId(obj, "_design/" + p.basename(ddoc_dir));
+    return obj;
+  }
 }

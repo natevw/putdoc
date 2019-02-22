@@ -30,7 +30,9 @@ Files with the `.json` extension are parsed to support other datatypes like arra
 
 If there is an "_attachments" subfolder, the binary files are uploaded verbatim under their original subpaths. The content type will be guessed based on each file's extension.
 
-(For an alternate explanation, see [The CouchApp Filesystem Mapping](http://couchapp.readthedocs.io/en/latest/design/filesystem-mapping.html) documentation although note that there are currently some differences, e.g. the `_docs` subfolder is not yet supported.)
+If there is a "_docs" subfolder, it may contain a mix of either `.json` files and/or nested "document folder" structures. These will be uploaded alongside the main document. This is useful for seeding app data, but be careful since any changes that have made in the database will be overwritten.
+
+(For an alternate explanation of this overall structure, see [The CouchApp Filesystem Mapping](http://couchapp.readthedocs.io/en/latest/design/filesystem-mapping.html) documentation. This implementation may differ slightly, but the general approach is the same.)
 
 ## Examples
 
@@ -87,6 +89,21 @@ Simply becomes:
 ```
 
 This would probably be more useful with a document that had attachments, although note that putdoc does not handle large attachments well.
+
+You can even use putdoc on a **folder** of regular and/or design documents, using the `--docs` CLI flag:
+
+```
+sample_data
+  doc1.json
+  doc2.json
+  doc3
+    info      ("this document has some attachments")
+    _attachments
+      file1.txt
+      file2.txt
+```
+
+Running `putdoc --docs ./sample_data http://localhost:5984/my_data` will upload three documents (doc1/doc2/doc3) to the databse, with NO "parent" document corresponding to the sample_data folder itself.
 
 
 ## See also
