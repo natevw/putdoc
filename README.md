@@ -103,7 +103,7 @@ sample_data
       file2.txt
 ```
 
-Running `putdoc --docs ./sample_data http://localhost:5984/my_data` will upload three documents (doc1/doc2/doc3) to the databse, with NO "parent" document corresponding to the sample_data folder itself.
+Running `putdoc --docs ./sample_data http://localhost:5984/my_data` will upload three documents (doc1/doc2/doc3) to the my_data database, with no "parent" document corresponding to the sample_data folder itself.
 
 
 ## See also
