@@ -30,7 +30,11 @@ module.exports = function (ddoc_dir, opts) {
     
     var data = fs.readFileSync(abs_path, 'utf8');
     if (opts.json) {
-      data = JSON.parse(data);
+      try {
+        data = JSON.parse(data);
+      } catch (err) {
+        console.warn("Couldn't parse", abs_path, "as intended:", err.message);
+      }
     }
     return data;
   }
