@@ -7,6 +7,7 @@ assert(ignore._attachments['yep.txt']);
 assert(!ignore._attachments['nope.bin']);
 assert(!ignore.packages);
 assert(ignore.other.packages);
+assert(ignore.broken === "This is not valid JSON :-/");
 
 
 var auto_id = buildDoc("test_samples/folder_as_id");
