@@ -49,6 +49,21 @@ module.exports = function (ddoc_dir, opts) {
     });
   }
   
+  function addField(obj, key, val) {
+    let keyPrefix = key.split('.')[0];
+    if (keyPrefix === '_data') {
+      if (typeof val === 'object') {
+        if (Array.isArray(val)) console.warn("Merging indexes of array", key, "into parent object.");
+        extend(obj, val);
+      } else {
+        // only objects can be merged.
+        console.warn("Ignoring non-mergeable", key, typeof val, "field.");
+      }
+    } else {
+      obj[key] = val;
+    }
+  }
+  
   function fixupId(obj, fallback_id) {
     if (!obj._id) obj._id = fallback_id;
     else obj._id = obj._id.trim();      // clean up a bit, not as aggressively as https://github.com/couchapp/couchapp/blob/1399aedfa9e5bb3dd582aa5992dc419e82e102a3/couchapp/localdoc.py#L81 though
@@ -67,12 +82,15 @@ module.exports = function (ddoc_dir, opts) {
         addDocsFromDir(obj._docs, abs_path, '');
       }
       else if (type.isDirectory()) {
-        obj[file] = objFromDir(doc_dir, rel_path, lvl+1);
+        var key = file,
+            val = objFromDir(doc_dir, rel_path, lvl+1);
+        addField(obj, key, val);
       }
       else if (type.isFile()) {
         var ext = p.extname(file),
-            key = p.basename(file,ext);
-        obj[key] = loadData(abs_path, {json:(ext === '.json')});
+            key = p.basename(file,ext),
+            val = loadData(abs_path, {json:(ext === '.json')});
+        addField(obj, key, val);
       } else {
           console.warn("Skipping field", rel_path);
       }

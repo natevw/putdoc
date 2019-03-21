@@ -17,6 +17,23 @@ var static_id = buildDoc("test_samples/hardcoded_id");
 //console.log(static_id)
 assert(static_id._id === '_design/from_file');
 
+var merged_entries = buildDoc("test_samples/merging");
+// console.log(merged_entries);
+assert(!Object.keys(merged_entries).some(k => k.startsWith('_data')));
+assert(merged_entries._id === 'root_id_from_merged_folder');
+assert(merged_entries.from_file === true);
+assert(merged_entries.from_data === true);
+assert(merged_entries.also_has === "more");
+assert(merged_entries['0'] === "array");
+assert(merged_entries['1'] === "entries");
+assert(     // NOTE: which one wins is undefined behavior!
+  merged_entries.duplicate === "from: file entry" ||
+  merged_entries.duplicate === "from: sub-folder" ||
+  merged_entries.duplicate === "from: _data.json" ||
+  merged_entries.duplicate === "from: _data.more.json"
+)
+assert(merged_entries.data["are we recursing yet?"] === "not overly so");
+
 var nested_documents = buildDoc("test_samples/subdocs");
 //console.log(nested_documents);
 assert(nested_documents._id === 'parent');
@@ -27,6 +44,7 @@ assert(nested_documents._docs.find(d => d._id === 'json').json === true);
 var subnested = nested_documents._docs.find(d => d._id === 'doc_of_docs');
 //console.log(subnested._docs);
 assert(subnested.field === "value");
+assert(subnested.extra_field === "extra_value");
 assert(Array.isArray(subnested._docs));
 assert(subnested._docs.find(d => d._id === 'nested').abc === 123);
 var nest_atts = subnested._docs.find(d => d._id === 'nested2');

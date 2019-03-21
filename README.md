@@ -34,6 +34,26 @@ If there is a "_docs" subfolder, it may contain a mix of either `.json` files an
 
 (For an alternate explanation of this overall structure, see [The CouchApp Filesystem Mapping](http://couchapp.readthedocs.io/en/latest/design/filesystem-mapping.html) documentation. This implementation may differ slightly, but the general approach is the same.)
 
+### Bonus feature: merging multiple entries into an object
+
+Within any object (e.g. document or subfolder), `putdoc` will recognize a special key named `_data`. The value of this field must be an object, and the entries of this object will be merged into its *parent*.
+
+This is **not** part of the original CouchApp's filesystem mapping and may not be supported by any other utility; use advisedly if compatibility is a concern. Without this feature, you must choose between representing an object as:
+
+1. a folder with *all* its entries as individual files
+2. via a `.json` file within a parent object
+
+This feature adds additional flexibility for organizing documents/sub-objects:
+
+1. folder with individual entry files
+2. single `.json` file within a parent
+3. folder with entries in individual files *and/or* a `_data.json` file
+
+This is especially useful at the top level document where you may want a folder structure for `_attachments` but also have lots of little fields that don't need their own files.
+
+One last thing: if you really have need, `putdoc` actually supports merging *multiple* objects where the first \[dot-separated] part of the filename \[i.e. key] is `_data`. That is, entries from `_data.X.json`, `_data.generated.json`, `_data.json`, and even `_data.group1/` will all get merged into their parent object. The precendence of keys defined in multiple places is currently unspecified and subject to random chance/future change.
+
+
 ## Examples
 
 So a design document might have a folder like:
