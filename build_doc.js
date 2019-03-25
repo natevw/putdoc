@@ -78,8 +78,7 @@ module.exports = function (ddoc_dir, opts) {
         addAttsFromDir(obj._attachments, doc_dir, rel_path, '');
       }
       else if (lvl === 0 && type.isDirectory() && file === '_docs') {
-        obj._docs = [];
-        addDocsFromDir(obj._docs, abs_path, '');
+        obj._docs = docsFromDir(abs_path);
       }
       else if (type.isDirectory()) {
         var key = file,
@@ -97,18 +96,20 @@ module.exports = function (ddoc_dir, opts) {
     });
     return obj;
   }
-  function addDocsFromDir(docs, dir) {
+  function docsFromDir(dir) {
+    var docs = [];
     forEachEntry(dir, '', function (file, type, rel_path, abs_path) {
       var subdoc;
       if (type.isDirectory()) subdoc = objFromDir(abs_path, '', 0);
       else if (type.isFile() && p.extname(file) === '.json') {
         subdoc = loadData(abs_path, {json:true});
       } else {
-          console.warn("Skipping document", rel_path);
+        console.warn("Skipping document", rel_path);
       }
       fixupId(subdoc, p.basename(file, '.json'));
       docs.push(subdoc);
     });
+    return docs;
   }
   function addAttsFromDir(atts, doc_dir, dir, pre) {
     forEachEntry(doc_dir, dir, function (file, type, rel_path, abs_path) {
@@ -122,8 +123,7 @@ module.exports = function (ddoc_dir, opts) {
   }
   
   if (opts.no_parent) {
-    var _docs = [];
-    addDocsFromDir(_docs, ddoc_dir);
+    var _docs = docsFromDir(ddoc_dir);
     return {_docs:_docs};
   } else {
     var obj = objFromDir(ddoc_dir, '', 0);
