@@ -209,13 +209,15 @@ This would upload **four** documents, three of which include a shared entry:
 
 * [Erica](https://github.com/benoitc/erica) is an Erlang port that seems similar to the original couchapp tool
 
+* [couchdb-push](https://github.com/jo/couchdb-push) is a similar tool to deploy CouchDB documents from directory, JSON or CommonJS module.
+
 * [Kanso](https://kanso.app.medicmobile.org/) is also in node.js and has a `traditional-couchapp` plugin to support the same folder structure albeit still requiring a `kanso.json` configuration file.
 
 * [node.couchapp.js](https://github.com/mikeal/node.couchapp.js/) — this uses a different app format, iirc this was a precursor to the "normal Kanso"–style apps rather than the "Traditional CouchApp" style.
 
 * I also have a utility that lets you `require()` a traditional-style design document into your node app, called [ddoc](https://github.com/natevw/ddoc). This can help you migrate design document code (like validators or views) out of the database and into middleware should you need that.
 
-* [couchdb-push](https://github.com/jo/couchdb-push) is a similar tool to deploy CouchDB documents from directory, JSON or CommonJS module. 
+* [json-fs](https://github.com/jokeyrhyme/json-fs) — converts JSON to files and directories and back, but using a different mapping than the couchapp one.
 
 
 ## ISC License
