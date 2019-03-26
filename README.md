@@ -51,12 +51,14 @@ This feature adds additional flexibility for organizing documents/sub-objects:
 
 This is especially useful at the top level document where you may want a folder structure for `_attachments` but also have lots of little fields that don't need their own files.
 
-One last thing: if you really have need, `putdoc` actually supports merging *multiple* objects where the first \[dot-separated] part of the filename \[i.e. key] is `_data`. That is, entries from `_data.X.json`, `_data.generated.json`, `_data.json`, and even `_data.group1/` will all get merged into their parent object. The precendence of keys defined in multiple places is currently unspecified and subject to random chance/future change.
+A few other tips: if you really have need, `putdoc` actually supports merging *multiple* objects where the first \[dot-separated] part of the filename \[i.e. key] is `_data`. That is, entries from `_data.X.json`, `_data.generated.json`, `_data.json`, and even `_data.group1/` will all get merged into their parent object. Also, in a `_docs` folder any `_data` entries found will be mixed in to all the documents in that folder.
+
+In all cases, the precendence of keys defined in multiple places is currently unspecified and subject to random chance/future change.
 
 
 ## Examples
 
-So a design document might have a folder like:
+A design document might have a folder like:
 
 ```
 my_app_repo/
@@ -87,6 +89,9 @@ You could then update the "_design/glob" document in a local "dev_db" by using t
 
     putdoc . http://some_admin:their_password@localhost:5984/dev_db
 
+
+### Regular documents
+
 You can use putdoc for regular documents too, if you have need:
 
 ```
@@ -97,7 +102,7 @@ freedom_day
   alt_names.json ('["Juneteenth Independence Day", "Freedom Day"]')
 ```
 
-Simply becomes:
+Simply becomes this when uploaded:
 
 ```
 {
@@ -110,7 +115,12 @@ Simply becomes:
 
 This would probably be more useful with a document that had attachments, although note that putdoc does not handle large attachments well.
 
-You can even use putdoc on a **folder** of regular and/or design documents, using the `--docs` CLI flag:
+
+### Multiple documents
+
+As in the original CouchApp spec, any document can have a `_docs` folder containing nested documents and these will be uploaded separately.
+
+You can also use putdoc on a **folder** of regular and/or design documents, using the `--docs` CLI flag:
 
 ```
 sample_data
@@ -124,6 +134,73 @@ sample_data
 ```
 
 Running `putdoc --docs ./sample_data http://localhost:5984/my_data` will upload three documents (doc1/doc2/doc3) to the my_data database, with no "parent" document corresponding to the sample_data folder itself.
+
+
+### Merged data
+
+If you wish to group some of the ddoc's smaller files into a single JSON, you could accomplish the same result as the first example above using "merged data":
+
+```
+my_app_repo/
+  _data.json  ('{"id":"_design/glob","language":"javascript"}')
+  views/
+    …
+  rewrites.json
+  …
+  _attachments/
+    logo.png
+    nerdishness.html
+```
+
+
+Or for sharing common fields between multiple documents:
+
+```
+sample_group
+  _id           ('grp-dd6cde182fe78abb23ad8e40c2db5cf7')
+  _data.json    ('{"name":"Sample", "info":"this is the parent container"}')
+  _docs
+    _data.json  ('{"group_id":"grp-dd6cde182fe78abb23ad8e40c2db5cf7"}')
+    doc1.json   ('{"info":"first child"}')
+    doc2.json   ('{"info":"second child"}')
+    doc3
+      info      ('this third child has some attachments')
+      _attachments
+        file1.txt
+        file2.txt
+```
+
+This would upload **four** documents, three of which include a shared entry:
+
+```
+{
+  "_id": "grp-dd6cde182fe78abb23ad8e40c2db5cf7",
+  "name": "Sample",
+  "info": "this is the parent container"
+}
+
+{
+  "_id": "doc1",
+  "info": "first child",
+  "group_id":"grp-dd6cde182fe78abb23ad8e40c2db5cf7"
+}
+
+{
+  "_id": "doc2",
+  "info": "second child",
+  "group_id":"grp-dd6cde182fe78abb23ad8e40c2db5cf7"
+}
+
+{
+  "_id": "doc2",
+  "info": "this third child has some attachments",
+  "group_id":"grp-dd6cde182fe78abb23ad8e40c2db5cf7",
+  "_attachments": {
+    "file1.txt": {/* … */},
+    "file2.txt": {/* … */}
+  }
+}
+```
 
 
 ## See also

@@ -36,17 +36,20 @@ assert(     // NOTE: which one wins is undefined behavior!
 assert(merged_entries.data["are we recursing yet?"] === "not overly so");
 
 var nested_documents = buildDoc("test_samples/subdocs");
-//console.log(nested_documents);
+// console.log(nested_documents);
 assert(nested_documents._id === 'parent');
 assert(Array.isArray(nested_documents._docs));
 assert(nested_documents._docs.length === 3);
 assert(nested_documents._docs.find(d => d._id === 'explicit').name === "Mr. Id");
 assert(nested_documents._docs.find(d => d._id === 'json').json === true);
 var subnested = nested_documents._docs.find(d => d._id === 'doc_of_docs');
-//console.log(subnested._docs);
+// console.log(subnested._docs);
 assert(subnested.field === "value");
 assert(subnested.extra_field === "extra_value");
+assert(!('mixin' in subnested));
 assert(Array.isArray(subnested._docs));
+assert(subnested._docs.every(d => d.mixin === true));
+assert(subnested._docs.every(d => d.mixin2 === 2));
 assert(subnested._docs.find(d => d._id === 'nested').abc === 123);
 var nest_atts = subnested._docs.find(d => d._id === 'nested2');
 assert(nest_atts._attachments['file.txt'].data === "SEVMTE8=");

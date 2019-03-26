@@ -97,7 +97,8 @@ module.exports = function (ddoc_dir, opts) {
     return obj;
   }
   function docsFromDir(dir) {
-    var docs = [];
+    var docs = [],
+        data = {};
     forEachEntry(dir, '', function (file, type, rel_path, abs_path) {
       var subdoc;
       if (type.isDirectory()) subdoc = objFromDir(abs_path, '', 0);
@@ -106,8 +107,17 @@ module.exports = function (ddoc_dir, opts) {
       } else {
         console.warn("Skipping document", rel_path);
       }
-      fixupId(subdoc, p.basename(file, '.json'));
-      docs.push(subdoc);
+      
+      let keyPrefix = file.split('.')[0];
+      if (keyPrefix === '_data') {
+        extend(data, subdoc);
+      } else {
+        fixupId(subdoc, p.basename(file, '.json'));
+        docs.push(subdoc);
+      }
+    });
+    docs.forEach(function (subdoc) {
+      extend(subdoc, data);
     });
     return docs;
   }
