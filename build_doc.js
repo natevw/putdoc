@@ -1,6 +1,5 @@
 var fs = require('fs'),
     p = require('path'),
-    { posix } = require('path'),
     mime = require('mime'),
     extend = require('xok');
 
@@ -124,8 +123,8 @@ module.exports = function (ddoc_dir, opts) {
   }
   function addAttsFromDir(atts, doc_dir, dir, pre) {
     forEachEntry(doc_dir, dir, function (file, type, rel_path, abs_path) {
-      // use posix variant of node's path utility for URL construction
-      var key = posix.join(pre,file);
+      // NOTE: `key` is used in URLs, so use `p.posix` instead of OS default
+      var key = p.posix.join(pre, file);
       if (type.isDirectory()) addAttsFromDir(atts, doc_dir, rel_path, key);
       else atts[key] = {
         content_type: mime.getType(file),
